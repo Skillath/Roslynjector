@@ -12,14 +12,28 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
     private const string AddScoped = "AddScoped";
     
     // Simple records the generator uses internally
-    private abstract record BindingInfo(ITypeSymbol Service, ServiceLifetime Lifetime);
-    private sealed record ImplBindingInfo(ITypeSymbol Service, ITypeSymbol Impl, ServiceLifetime Lifetime)
-        : BindingInfo(Service, Lifetime)
+    private abstract record BindingInfo(
+        ITypeSymbol Service, 
+        ServiceLifetime Lifetime);
+    
+    private sealed record ImplBindingInfo(
+        ITypeSymbol Service, 
+        ITypeSymbol Impl, 
+        ServiceLifetime Lifetime)
+        : BindingInfo(
+            Service, 
+            Lifetime)
     {
         public override string ToString() => $"{Lifetime} {Service} -> {Impl}";
     }
-    private sealed record FactoryBindingInfo(ITypeSymbol Service, string FactoryText, ServiceLifetime Lifetime)
-        : BindingInfo(Service, Lifetime)
+    
+    private sealed record FactoryBindingInfo(
+        ITypeSymbol Service, 
+        string FactoryText, 
+        ServiceLifetime Lifetime)
+        : BindingInfo(
+            Service, 
+            Lifetime)
     {
         public override string ToString() => $"{Lifetime} {Service} = factory({FactoryText})";
     }
@@ -60,7 +74,6 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
     }
     
     // ---------- helpers ----------
-
     private static bool IsAddCallCandidate(SyntaxNode node)
     {
         if (node is not InvocationExpressionSyntax inv) 
@@ -79,8 +92,7 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
         }
 
         // Conditional access: services?.AddSingleton(...)
-        if (inv.Expression is MemberBindingExpressionSyntax memberBindingExpressionSyntax 
-            && memberBindingExpressionSyntax.Name is SimpleNameSyntax simpleNameSyntax)
+        if (inv.Expression is MemberBindingExpressionSyntax { Name: SimpleNameSyntax simpleNameSyntax })
         {
             var id = simpleNameSyntax switch
             {
