@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Sample", "Rosl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Tests", "Roslyinjector\Roslynjector.Tests\Roslynjector.Tests.csproj", "{B4E83671-E8CE-438F-BDA9-BC7A4E190843}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Abstractions", "Roslyinjector\Roslynjector.Abstractions\Roslynjector.Abstractions.csproj", "{15E4320C-C2A3-4C7C-B706-2D3D4BA5D0B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Runtime", "Roslyinjector\Roslynjector.Runtime\Roslynjector.Runtime.csproj", "{FC082D0C-2010-4D37-8EF9-56D4B5384E33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15E4320C-C2A3-4C7C-B706-2D3D4BA5D0B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15E4320C-C2A3-4C7C-B706-2D3D4BA5D0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15E4320C-C2A3-4C7C-B706-2D3D4BA5D0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15E4320C-C2A3-4C7C-B706-2D3D4BA5D0B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC082D0C-2010-4D37-8EF9-56D4B5384E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC082D0C-2010-4D37-8EF9-56D4B5384E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC082D0C-2010-4D37-8EF9-56D4B5384E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC082D0C-2010-4D37-8EF9-56D4B5384E33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

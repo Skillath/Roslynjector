@@ -1,0 +1,12 @@
+partial bool TryResolveCore(System.Type t, out object instance)
+{
+{{ for b in bindings }}
+    if (t == typeof({{ b.service }}))
+    {
+        instance = new {{ b.impl }}();
+        return true;
+    }
+{{ end }}
+    instance = null!;
+    return false;
+}

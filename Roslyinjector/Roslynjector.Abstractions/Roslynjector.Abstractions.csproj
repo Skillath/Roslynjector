@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>Roslynjector.Abstractions</AssemblyName>
+        <LangVersion>latest</LangVersion>
+
+        <!-- This project must be consumable by any project where the generator runs -->
+        <RootNamespace>Roslynjector</RootNamespace>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- We depend on IServiceCollection (MS.DI abstractions only) -->
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    </ItemGroup>
+
+</Project>
