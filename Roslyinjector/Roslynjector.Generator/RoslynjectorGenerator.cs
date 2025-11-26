@@ -67,25 +67,25 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
             return false;
 
         // Normal:   services.AddSingleton(...)
-        if (inv.Expression is MemberAccessExpressionSyntax mae)
+        if (inv.Expression is MemberAccessExpressionSyntax memberAccessExpressionSyntax)
         {
-            var name = mae.Name switch
+            var name = memberAccessExpressionSyntax.Name switch
             {
-                GenericNameSyntax g => g.Identifier.ValueText,
-                IdentifierNameSyntax i => i.Identifier.ValueText,
+                GenericNameSyntax genericNameSyntax => genericNameSyntax.Identifier.ValueText,
+                IdentifierNameSyntax identifierNameSyntax => identifierNameSyntax.Identifier.ValueText,
                 _ => null
             };
             return name is AddSingleton or AddTransient or AddScoped;
         }
 
         // Conditional access: services?.AddSingleton(...)
-        if (inv.Expression is MemberBindingExpressionSyntax mbs 
-            && mbs.Name is SimpleNameSyntax sn)
+        if (inv.Expression is MemberBindingExpressionSyntax memberBindingExpressionSyntax 
+            && memberBindingExpressionSyntax.Name is SimpleNameSyntax simpleNameSyntax)
         {
-            var id = sn switch
+            var id = simpleNameSyntax switch
             {
-                GenericNameSyntax g => g.Identifier.ValueText,
-                IdentifierNameSyntax i => i.Identifier.ValueText,
+                GenericNameSyntax genericNameSyntax => genericNameSyntax.Identifier.ValueText,
+                IdentifierNameSyntax identifierNameSyntax => identifierNameSyntax.Identifier.ValueText,
                 _ => null
             };
             return id is AddSingleton or AddTransient or AddScoped;
@@ -99,11 +99,10 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
         var inv = (InvocationExpressionSyntax)context.Node;
         var model = context.SemanticModel;
 
-        var sym = model.GetSymbolInfo(inv).Symbol as IMethodSymbol;
-        if (sym is null) 
+        if (model.GetSymbolInfo(inv).Symbol is not IMethodSymbol methodSymbol) 
             return null;
 
-        var lifetime = sym.Name switch
+        var lifetime = methodSymbol.Name switch
         {
             AddSingleton => ServiceLifetime.Singleton,
             AddScoped => ServiceLifetime.Scoped,
@@ -111,29 +110,28 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
         };
 
         // CASE 1: Generic impl-based: AddX<TService,TImpl>()
-        if (sym.TypeArguments.Length == 2)
+        if (methodSymbol.TypeArguments.Length == 2)
         {
-            var svc = sym.TypeArguments[0] as INamedTypeSymbol;
-            var impl = sym.TypeArguments[1] as INamedTypeSymbol;
-            if (svc is null || impl is null) 
+            if (methodSymbol.TypeArguments[0] is not INamedTypeSymbol service 
+                || methodSymbol.TypeArguments[1] is not INamedTypeSymbol implementation) 
                 return null;
             
-            return new ImplBindingInfo(svc, impl, lifetime);
+            return new ImplBindingInfo(service, implementation, lifetime);
         }
 
         // CASE 2: Generic factory: AddX<TService>(Func<IServiceProvider,TService> factory)
-        if (sym.TypeArguments.Length == 1 && inv.ArgumentList.Arguments.Count == 1)
+        if (methodSymbol.TypeArguments.Length == 1 
+            && inv.ArgumentList.Arguments.Count == 1)
         {
-            var svc = sym.TypeArguments[0] as INamedTypeSymbol;
-            if (svc is null) 
+            if (methodSymbol.TypeArguments[0] is not INamedTypeSymbol service) 
                 return null;
             
             var factoryText = inv.ArgumentList.Arguments[0].ToFullString();
-            return new FactoryBindingInfo(svc, factoryText, lifetime);
+            return new FactoryBindingInfo(service, factoryText, lifetime);
         }
 
         // CASE 3: Non-generic impl-based: AddX(typeof(Svc), typeof(Impl))
-        if (sym.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
+        if (methodSymbol.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
         {
             var argument0 = inv.ArgumentList.Arguments[0].Expression;
             var argument1 = inv.ArgumentList.Arguments[1].Expression;
@@ -141,29 +139,28 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
             if (argument0 is TypeOfExpressionSyntax typeOfExpressionSyntax0 
                 && argument1 is TypeOfExpressionSyntax typeOfExpressionSyntax1)
             {
-                var svc = model.GetTypeInfo(typeOfExpressionSyntax0.Type).Type as INamedTypeSymbol;
-                var impl = model.GetTypeInfo(typeOfExpressionSyntax1.Type).Type as INamedTypeSymbol;
+                var service = model.GetTypeInfo(typeOfExpressionSyntax0.Type).Type as INamedTypeSymbol;
+                var implementation = model.GetTypeInfo(typeOfExpressionSyntax1.Type).Type as INamedTypeSymbol;
                 
-                if (svc is not null && impl is not null)
-                    return new ImplBindingInfo(svc, impl, lifetime);
+                if (service is not null && implementation is not null)
+                    return new ImplBindingInfo(service, implementation, lifetime);
             }
         }
 
         // CASE 4: Non-generic factory: AddX(typeof(Svc), factory)
-        if (sym.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
+        if (methodSymbol.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
         {
             var argument0 = inv.ArgumentList.Arguments[0].Expression;
             var argument1 = inv.ArgumentList.Arguments[1];
 
             if (argument0 is not TypeOfExpressionSyntax t0) 
                 return null;
-            
-            var svc = model.GetTypeInfo(t0.Type).Type as INamedTypeSymbol;
-            if (svc is null) 
+
+            if (model.GetTypeInfo(t0.Type).Type is not INamedTypeSymbol service) 
                 return null;
                 
             var factoryText = argument1.ToFullString();
-            return new FactoryBindingInfo(svc, factoryText, lifetime);
+            return new FactoryBindingInfo(service, factoryText, lifetime);
         }
 
         return null;

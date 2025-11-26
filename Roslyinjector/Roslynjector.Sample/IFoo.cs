@@ -16,5 +16,6 @@ static class Bootstrap
         services.AddTransient<IBar, Bar>();
         services.AddScoped<Random>(sp => new Random(7));
         //services.AddTransient(typeof(Uri), sp => new Uri("https://example.com"));
+        
     }
 }
