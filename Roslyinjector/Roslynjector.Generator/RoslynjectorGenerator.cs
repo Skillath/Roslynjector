@@ -33,16 +33,8 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
     
     public void Initialize(IncrementalGeneratorInitializationContext ctx)
     {
-        // Always-on probe to verify the analyzer runs
-        ctx.RegisterPostInitializationOutput(spc =>
-        {
-            spc.AddSource("GenProbe.Marker.g.cs",
-                Microsoft.CodeAnalysis.Text.SourceText.From(
-                    "namespace GenProbe{public static class Marker{public const string Ping=\"OK\";}}",
-                    System.Text.Encoding.UTF8));
-        });
-        
-        var regs = ctx.SyntaxProvider.CreateSyntaxProvider(
+        var regs = ctx.SyntaxProvider
+            .CreateSyntaxProvider(
                 static (node, _) => IsAddCallCandidate(node),
                 static (context, _) => TransformAddCall(context)
             )
@@ -143,13 +135,14 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
         // CASE 3: Non-generic impl-based: AddX(typeof(Svc), typeof(Impl))
         if (sym.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
         {
-            var a0 = inv.ArgumentList.Arguments[0].Expression;
-            var a1 = inv.ArgumentList.Arguments[1].Expression;
+            var argument0 = inv.ArgumentList.Arguments[0].Expression;
+            var argument1 = inv.ArgumentList.Arguments[1].Expression;
 
-            if (a0 is TypeOfExpressionSyntax t0 && a1 is TypeOfExpressionSyntax t1)
+            if (argument0 is TypeOfExpressionSyntax typeOfExpressionSyntax0 
+                && argument1 is TypeOfExpressionSyntax typeOfExpressionSyntax1)
             {
-                var svc = model.GetTypeInfo(t0.Type).Type as INamedTypeSymbol;
-                var impl = model.GetTypeInfo(t1.Type).Type as INamedTypeSymbol;
+                var svc = model.GetTypeInfo(typeOfExpressionSyntax0.Type).Type as INamedTypeSymbol;
+                var impl = model.GetTypeInfo(typeOfExpressionSyntax1.Type).Type as INamedTypeSymbol;
                 
                 if (svc is not null && impl is not null)
                     return new ImplBindingInfo(svc, impl, lifetime);
@@ -159,18 +152,18 @@ public sealed class RoslynjectorGenerator : IIncrementalGenerator
         // CASE 4: Non-generic factory: AddX(typeof(Svc), factory)
         if (sym.TypeArguments.Length == 0 && inv.ArgumentList.Arguments.Count == 2)
         {
-            var a0 = inv.ArgumentList.Arguments[0].Expression;
-            var a1 = inv.ArgumentList.Arguments[1];
+            var argument0 = inv.ArgumentList.Arguments[0].Expression;
+            var argument1 = inv.ArgumentList.Arguments[1];
 
-            if (a0 is TypeOfExpressionSyntax t0)
-            {
-                var svc = model.GetTypeInfo(t0.Type).Type as INamedTypeSymbol;
-                if (svc is not null)
-                {
-                    var factoryText = a1.ToFullString();
-                    return new FactoryBindingInfo(svc, factoryText, lifetime);
-                }
-            }
+            if (argument0 is not TypeOfExpressionSyntax t0) 
+                return null;
+            
+            var svc = model.GetTypeInfo(t0.Type).Type as INamedTypeSymbol;
+            if (svc is null) 
+                return null;
+                
+            var factoryText = argument1.ToFullString();
+            return new FactoryBindingInfo(svc, factoryText, lifetime);
         }
 
         return null;
