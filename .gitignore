@@ -52,3 +52,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+.idea
+Roslyinjector/Roslynjector.Generator/bin/Debug/netstandard2.0
+Roslyinjector/Roslynjector.Generator/obj
+Roslyinjector/Roslynjector.Sample/bin/Debug/net8.0
+Roslyinjector/Roslynjector.Sample/obj
+Roslyinjector/Roslynjector.Tests/bin/Debug/net8.0
+Roslyinjector/Roslynjector.Tests/obj

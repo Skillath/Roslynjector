@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Generator", "Roslyinjector\Roslynjector.Generator\Roslynjector.Generator.csproj", "{55B6334A-D67A-40A6-B191-5969CCEAF633}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Sample", "Roslyinjector\Roslynjector.Sample\Roslynjector.Sample.csproj", "{BA548B18-9C2E-4C38-B990-DCEE3407A8B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslynjector.Tests", "Roslyinjector\Roslynjector.Tests\Roslynjector.Tests.csproj", "{B4E83671-E8CE-438F-BDA9-BC7A4E190843}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55B6334A-D67A-40A6-B191-5969CCEAF633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B6334A-D67A-40A6-B191-5969CCEAF633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B6334A-D67A-40A6-B191-5969CCEAF633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B6334A-D67A-40A6-B191-5969CCEAF633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA548B18-9C2E-4C38-B990-DCEE3407A8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA548B18-9C2E-4C38-B990-DCEE3407A8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA548B18-9C2E-4C38-B990-DCEE3407A8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA548B18-9C2E-4C38-B990-DCEE3407A8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4E83671-E8CE-438F-BDA9-BC7A4E190843}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
